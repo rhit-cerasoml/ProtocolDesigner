@@ -1,10 +1,10 @@
 package pd.dataobject;
 
 import pd.Artifact;
-import pd.util.Deserializer;
-import pd.util.Serializable;
-import pd.util.SerializingInputStream;
-import pd.util.SerializingOutputStream;
+import pd.TypeManager;
+import pd.util.serial.Serializable;
+import pd.util.serial.SerializingInputStream;
+import pd.util.serial.SerializingOutputStream;
 
 import java.util.ArrayList;
 
@@ -12,9 +12,12 @@ public class DataObject implements Serializable {
     private String className;
     private ArrayList<Field> fields;
 
+    // not saved
+    private TypeManager typeManager;
 
-    public DataObject(String name){
+    public DataObject(String name, TypeManager typeManager){
         this.className = name;
+        this.typeManager = typeManager;
         fields = new ArrayList<>();
     }
 
@@ -88,6 +91,13 @@ public class DataObject implements Serializable {
     public DataObject(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         this.className = in.readString();
         this.fields = in.readArrayList(Field::new);
+    }
+
+    public void setTypeManager(TypeManager typeManager){
+        this.typeManager = typeManager;
+        for(Field f : fields){
+            f.setTypeManager(typeManager);
+        }
     }
 
 

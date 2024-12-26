@@ -1,5 +1,8 @@
 package pd.util;
 
+import pd.util.serial.SerializingInputStream;
+import pd.util.serial.SerializingOutputStream;
+
 public class OptionalString {
     public String s = "";
     public boolean valid = false;

@@ -2,11 +2,10 @@ package pd;
 
 import pd.dataobject.DataObject;
 import pd.util.OptionalString;
-import pd.util.SerializingInputStream;
-import pd.util.SerializingOutputStream;
+import pd.util.serial.SerializingInputStream;
+import pd.util.serial.SerializingOutputStream;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +18,9 @@ public class ProjectManager {
     private OptionalString buildDirectory = new OptionalString();
     private OptionalString cacheDirectory = new OptionalString();
     private ArrayList<DataObject> objects;
+    private TypeManager typeManager;
+
+    private boolean canRevertCache = false; // Not saved - must be on an operation during this session
 
     public ProjectManager(String projectFilePath) {
         this.projectFilePath = projectFilePath;
@@ -33,7 +35,9 @@ public class ProjectManager {
         this.buildDirectory.invalidate();
         this.cacheDirectory.invalidate();
         this.objects = new ArrayList<>();
+        this.typeManager = new TypeManager();
     }
+
 
     public void setBuildDirectory(String buildDirectory) throws Exception {
         this.buildDirectory.set(buildDirectory);
@@ -69,13 +73,19 @@ public class ProjectManager {
         }while((walk = walk.getParent()) != null);
     }
 
+
     public void addDataObject(DataObject dataObject){
         objects.add(dataObject);
     }
 
+    public TypeManager getTypeManager(){
+        return this.typeManager;
+    }
+
+
     public void build() throws Exception {
         if(!buildDirectory.valid){
-            throw new Exception("No specified build directory!");
+            throw new Exception("No specified build directory");
         }
         if(cacheDirectory.valid){
             cache();
@@ -89,7 +99,7 @@ public class ProjectManager {
 
     public void cache() throws Exception {
         if(!cacheDirectory.valid){
-            throw new Exception("No specified cache directory!");
+            throw new Exception("No specified cache directory");
         }
 
         Path buildPath = Path.of(buildDirectory.s);
@@ -108,11 +118,15 @@ public class ProjectManager {
             }
         }));
         paths.close();
+        this.canRevertCache = true;
     }
 
     public void revertBuild() throws Exception {
+        if(!this.canRevertCache){
+            throw new Exception("No operation to revert");
+        }
         if(!cacheDirectory.valid){
-            throw new Exception("No specified cache directory!");
+            throw new Exception("No specified cache directory");
         }
 
         Path buildPath = Path.of(buildDirectory.s);
@@ -133,13 +147,15 @@ public class ProjectManager {
 
     private void clearCache() throws Exception {
         if(!cacheDirectory.valid){
-            throw new Exception("No specified cache directory!");
+            throw new Exception("No specified cache directory");
         }
-
         emptyDirectory(Path.of(cacheDirectory.s));
     }
 
     private void emptyDirectory(Path path) throws IOException {
+        File file = new File(path.toString());
+        if(!file.exists()) return;
+
         // Delete all contents of a path
         // Clever solution from: https://stackoverflow.com/a/46983076
         Files.walk(path)
@@ -170,12 +186,18 @@ public class ProjectManager {
         fos.close();
     }
 
+    public void saveAs(String newProjectPath) throws IOException {
+        this.projectFilePath = newProjectPath;
+        save();
+    }
+
     private byte[] buildSaveData() {
         SerializingOutputStream out = new SerializingOutputStream();
 
         this.buildDirectory.write(out);
         this.cacheDirectory.write(out);
         out.writeArrayList(objects);
+        this.typeManager.serialize(out);
 
         return out.toByteArray();
     }
@@ -185,11 +207,8 @@ public class ProjectManager {
         this.buildDirectory.read(in);
         this.cacheDirectory.read(in);
         this.objects = in.readArrayList(DataObject::new);
+        this.typeManager = new TypeManager(in);
 
     }
 
-    public void saveAs(String newProjectPath) throws IOException {
-        this.projectFilePath = newProjectPath;
-        save();
-    }
 }

@@ -1,4 +1,6 @@
-package pd.util;
+package pd.util.serial;
+
+import pd.util.serial.Serializable;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;

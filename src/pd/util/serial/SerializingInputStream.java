@@ -1,9 +1,10 @@
-package pd.util;
+package pd.util.serial;
+
+import pd.util.serial.Deserializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
