@@ -3,7 +3,7 @@ package pd.dataobject;
 import pd.util.serial.Serializable;
 import pd.util.serial.SerializingOutputStream;
 
-public enum Retention implements Serializable {
+public enum Target implements Serializable {
     COMMON,
     SERVER,
     CLIENT;

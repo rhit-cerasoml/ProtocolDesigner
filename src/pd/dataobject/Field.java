@@ -10,43 +10,31 @@ public class Field implements Serializable {
     private int typeIndex;
     private String name;
     private boolean visible;
-    private Retention retention;
+    private Target target;
 
     // not saved
     private TypeManager typeManager;
 
-    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible, Retention retention){
+    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible, Target retention){
         this.typeManager = typeManager;
         this.typeIndex = typeIndex;
         this.name = name;
         this.visible = visible;
-        this.retention = retention;
+        this.target = retention;
     }
 
     public void setTypeManager(TypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
-    public void buildBaseDeclaration(StringBuilder sb) throws Exception {
-        if(this.retention == Retention.COMMON) {
+    public void buildDeclaration(StringBuilder sb, Target outputTarget) throws Exception {
+        if(this.target == outputTarget) {
             buildDeclaration(sb, this.visible ? "public" : "protected");
         }
     }
 
-    public void buildServerDeclaration(StringBuilder sb) throws Exception {
-        if(this.retention == Retention.SERVER) {
-            buildDeclaration(sb, this.visible ? "public" : "private");
-        }
-    }
-
-    public void buildClientDeclaration(StringBuilder sb) throws Exception {
-        if(this.retention == Retention.CLIENT) {
-            buildDeclaration(sb, this.visible ? "public" : "private");
-        }
-    }
-
-    public void buildBaseSerialize(StringBuilder sb) throws Exception {
-        if(this.retention == Retention.CLIENT) {
+    public void buildSerialize(StringBuilder sb, Target outputTarget) throws Exception {
+        if(this.target == outputTarget) {
             getType().buildSerialize(sb, name);
         }
     }
@@ -72,7 +60,7 @@ public class Field implements Serializable {
         out.writeInt(typeIndex);
         out.writeString(name);
         out.writeBoolean(visible);
-        retention.serialize(out);
+        target.serialize(out);
     }
 
     // Deserialize
@@ -80,6 +68,6 @@ public class Field implements Serializable {
         this.typeIndex = in.readInt();
         this.name = in.readString();
         this.visible = in.readBoolean();
-        retention = Retention.values()[in.readInt()];
+        target = Target.values()[in.readInt()];
     }
 }

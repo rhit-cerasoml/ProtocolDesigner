@@ -3,6 +3,7 @@ package pd;
 import pd.artifacts.Artifact;
 import pd.artifacts.UtilityArtifacts;
 import pd.dataobject.DataObject;
+import pd.dataobject.Target;
 import pd.util.OptionalString;
 import pd.util.serial.SerializingInputStream;
 import pd.util.serial.SerializingOutputStream;
@@ -96,9 +97,9 @@ public class ProjectManager {
             utilityClass.buildArtifact(buildDirectory.s);
         }
         for(DataObject obj : objects){
-            obj.buildNewBaseClass().buildArtifact(buildDirectory.s);
-            obj.buildNewClientClass().buildArtifact(buildDirectory.s);
-            obj.buildNewServerClass().buildArtifact(buildDirectory.s);
+            obj.buildClass(Target.COMMON).buildArtifact(buildDirectory.s);
+            obj.buildClass(Target.SERVER).buildArtifact(buildDirectory.s);
+            obj.buildClass(Target.CLIENT).buildArtifact(buildDirectory.s);
         }
     }
 

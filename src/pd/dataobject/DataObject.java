@@ -20,66 +20,37 @@ public class DataObject implements Serializable {
         this.typeManager = typeManager;
         fields = new ArrayList<>();
 
-        fields.add(new Field(typeManager, 0, "x", true, Retention.COMMON));
+        fields.add(new Field(typeManager, 0, "x", true, Target.COMMON));
     }
 
-    public Artifact buildNewBaseClass() throws Exception {
-        Artifact artifact = new Artifact("base/" + className + "Base.java");
+    public Artifact buildClass(Target target) throws Exception {
+        Artifact artifact;
+        String suffix;
+        if(target == Target.COMMON){
+            artifact = new Artifact("base/" + className + "Base.java");
+            suffix = "Base";
+        }else if(target == Target.CLIENT){
+            artifact = new Artifact("client/" + className + "Client.java");
+            suffix = "Client";
+        }else{
+            artifact = new Artifact("server/" + className + "Server.java");
+            suffix = "Server";
+        }
 
         artifact.appendFreeSegment("imports");
 
         StringBuilder sb = new StringBuilder();
-
-        sb.append("public abstract class ");
+        sb.append("public ");
+        if(target == Target.COMMON) sb.append("abstract ");
+        sb.append("class ");
         sb.append(className);
-        sb.append("Base {\n");
-
+        sb.append(suffix);
+        sb.append(" {\n");
         for(Field f : fields){
-            f.buildBaseDeclaration(sb);
+            f.buildDeclaration(sb, target);
         }
-        artifact.append(sb.toString());
-        artifact.appendFreeSegment("body");
+        artifact.append(sb.toString()); // generated fields/functions
 
-        artifact.append("}");
-
-        return artifact;
-    }
-
-    public Artifact buildNewServerClass() throws Exception {
-        Artifact artifact = new Artifact("server/" + className + "Server.java");
-
-        artifact.appendFreeSegment("imports");
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("public class ");
-        sb.append(className);
-        sb.append("Server {\n");
-        for(Field f : fields){
-            f.buildServerDeclaration(sb);
-        }
-        artifact.append(sb.toString());
-        artifact.appendFreeSegment("body");
-
-        artifact.append("}");
-
-        return artifact;
-    }
-
-    public Artifact buildNewClientClass() throws Exception {
-        Artifact artifact = new Artifact("client/" + className + "Client.java");
-
-        artifact.appendFreeSegment("imports");
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("public class ");
-        sb.append(className);
-        sb.append("Client {\n");
-        for(Field f : fields){
-            f.buildClientDeclaration(sb);
-        }
-        artifact.append(sb.toString());
         artifact.appendFreeSegment("body");
 
         artifact.append("}");
