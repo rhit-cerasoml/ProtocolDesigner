@@ -1,6 +1,6 @@
 package pd.dataobject;
 
-import pd.Artifact;
+import pd.artifacts.Artifact;
 import pd.TypeManager;
 import pd.util.serial.Serializable;
 import pd.util.serial.SerializingInputStream;
@@ -19,9 +19,11 @@ public class DataObject implements Serializable {
         this.className = name;
         this.typeManager = typeManager;
         fields = new ArrayList<>();
+
+        fields.add(new Field(typeManager, 0, "x", true, Retention.COMMON));
     }
 
-    public Artifact buildNewBaseClass(){
+    public Artifact buildNewBaseClass() throws Exception {
         Artifact artifact = new Artifact("base/" + className + "Base.java");
 
         artifact.appendFreeSegment("imports");
@@ -31,9 +33,11 @@ public class DataObject implements Serializable {
         sb.append("public abstract class ");
         sb.append(className);
         sb.append("Base {\n");
-        artifact.append(sb.toString());
+
         for(Field f : fields){
+            f.buildBaseDeclaration(sb);
         }
+        artifact.append(sb.toString());
         artifact.appendFreeSegment("body");
 
         artifact.append("}");
@@ -41,7 +45,7 @@ public class DataObject implements Serializable {
         return artifact;
     }
 
-    public Artifact buildNewServerClass(){
+    public Artifact buildNewServerClass() throws Exception {
         Artifact artifact = new Artifact("server/" + className + "Server.java");
 
         artifact.appendFreeSegment("imports");
@@ -51,9 +55,10 @@ public class DataObject implements Serializable {
         sb.append("public class ");
         sb.append(className);
         sb.append("Server {\n");
-        artifact.append(sb.toString());
         for(Field f : fields){
+            f.buildServerDeclaration(sb);
         }
+        artifact.append(sb.toString());
         artifact.appendFreeSegment("body");
 
         artifact.append("}");
@@ -61,7 +66,7 @@ public class DataObject implements Serializable {
         return artifact;
     }
 
-    public Artifact buildNewClientClass(){
+    public Artifact buildNewClientClass() throws Exception {
         Artifact artifact = new Artifact("client/" + className + "Client.java");
 
         artifact.appendFreeSegment("imports");
@@ -71,9 +76,10 @@ public class DataObject implements Serializable {
         sb.append("public class ");
         sb.append(className);
         sb.append("Client {\n");
-        artifact.append(sb.toString());
         for(Field f : fields){
+            f.buildClientDeclaration(sb);
         }
+        artifact.append(sb.toString());
         artifact.appendFreeSegment("body");
 
         artifact.append("}");

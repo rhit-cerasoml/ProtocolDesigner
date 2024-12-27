@@ -15,16 +15,45 @@ public class Field implements Serializable {
     // not saved
     private TypeManager typeManager;
 
-    public Field(TypeManager typeManager){
+    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible, Retention retention){
         this.typeManager = typeManager;
-        this.typeIndex = -1;
-        this.name = "";
-        this.visible = false;
-        this.retention = Retention.COMMON;
+        this.typeIndex = typeIndex;
+        this.name = name;
+        this.visible = visible;
+        this.retention = retention;
     }
 
     public void setTypeManager(TypeManager typeManager) {
         this.typeManager = typeManager;
+    }
+
+    public void buildBaseDeclaration(StringBuilder sb) throws Exception {
+        if(this.retention == Retention.COMMON) {
+            buildDeclaration(sb, this.visible ? "public" : "protected");
+        }
+    }
+
+    public void buildServerDeclaration(StringBuilder sb) throws Exception {
+        if(this.retention == Retention.SERVER) {
+            buildDeclaration(sb, this.visible ? "public" : "private");
+        }
+    }
+
+    public void buildClientDeclaration(StringBuilder sb) throws Exception {
+        if(this.retention == Retention.CLIENT) {
+            buildDeclaration(sb, this.visible ? "public" : "private");
+        }
+    }
+
+
+    private void buildDeclaration(StringBuilder sb, String modifier) throws Exception {
+        sb.append("\t");
+        sb.append(modifier);
+        sb.append(" ");
+        sb.append(getType().getTypeName());
+        sb.append(" ");
+        sb.append(name);
+        sb.append(";\n");
     }
 
     private Type getType() throws Exception {

@@ -1,5 +1,7 @@
 package pd;
 
+import pd.artifacts.Artifact;
+import pd.artifacts.UtilityArtifacts;
 import pd.dataobject.DataObject;
 import pd.util.OptionalString;
 import pd.util.serial.SerializingInputStream;
@@ -89,6 +91,9 @@ public class ProjectManager {
         }
         if(cacheDirectory.valid){
             cache();
+        }
+        for(Artifact utilityClass : UtilityArtifacts.artifacts){
+            utilityClass.buildArtifact(buildDirectory.s);
         }
         for(DataObject obj : objects){
             obj.buildNewBaseClass().buildArtifact(buildDirectory.s);
@@ -208,6 +213,10 @@ public class ProjectManager {
         this.cacheDirectory.read(in);
         this.objects = in.readArrayList(DataObject::new);
         this.typeManager = new TypeManager(in);
+
+        for(DataObject dataObject : objects){
+            dataObject.setTypeManager(this.typeManager);
+        }
 
     }
 

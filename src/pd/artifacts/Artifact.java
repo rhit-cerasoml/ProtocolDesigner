@@ -1,4 +1,4 @@
-package pd;
+package pd.artifacts;
 
 import java.io.File;
 import java.io.FileWriter;

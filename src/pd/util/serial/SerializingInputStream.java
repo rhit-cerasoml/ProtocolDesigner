@@ -1,7 +1,5 @@
 package pd.util.serial;
 
-import pd.util.serial.Deserializer;
-
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
