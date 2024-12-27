@@ -39,6 +39,18 @@ public class Field implements Serializable {
         }
     }
 
+    public void buildDeserialize(StringBuilder sb, Target outputTarget) throws Exception {
+        if(this.target == outputTarget) {
+            getType().buildDeserialize(sb, name);
+        }
+    }
+
+    public void buildUpdate(StringBuilder sb, Target outputTarget) throws Exception {
+        if(this.target == outputTarget) {
+            getType().buildUpdate(sb, name);
+        }
+    }
+
     private void buildDeclaration(StringBuilder sb, String modifier) throws Exception {
         sb.append("\t");
         sb.append(modifier);

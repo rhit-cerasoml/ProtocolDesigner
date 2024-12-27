@@ -49,6 +49,9 @@ public class DataObject implements Serializable {
         for(Field f : fields){
             f.buildDeclaration(sb, target);
         }
+        buildSerializationFunction(sb, target);
+        buildDeserializationFunction(sb, target);
+        buildUpdateFunction(sb, target);
         artifact.append(sb.toString()); // generated fields/functions
 
         artifact.appendFreeSegment("body");
@@ -56,6 +59,41 @@ public class DataObject implements Serializable {
         artifact.append("}");
 
         return artifact;
+    }
+
+    private void buildSerializationFunction(StringBuilder sb, Target target) throws Exception {
+        sb.append("\tpublic void serialize(SerializingInputStream in) {\n");
+        if(target != Target.COMMON){
+            sb.append("\t\tsuper.serialize(in);\n");
+        }
+        for(Field f : fields){
+            f.buildSerialize(sb, target);
+        }
+        sb.append("\t}\n");
+    }
+
+    private void buildDeserializationFunction(StringBuilder sb, Target target) throws Exception {
+        sb.append("\tpublic ");
+        sb.append(className);
+        sb.append("(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {\n");
+        if(target != Target.COMMON){
+            sb.append("\t\tsuper(in);\n");
+        }
+        for(Field f : fields){
+            f.buildDeserialize(sb, target);
+        }
+        sb.append("\t}\n");
+    }
+
+    private void buildUpdateFunction(StringBuilder sb, Target target) throws Exception {
+        sb.append("\tpublic void update(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {\n");
+        if(target != Target.COMMON){
+            sb.append("\t\tsuper.update(in);\n");
+        }
+        for(Field f : fields){
+            f.buildUpdate(sb, target);
+        }
+        sb.append("\t}\n");
     }
 
     @Override
