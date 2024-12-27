@@ -12,19 +12,11 @@ import java.util.ArrayList;
 public class TypeManager implements Serializable {
     private static final Type INVALID = new Type("UnknownType", new SerializationMode() {
         @Override
-        public String getSerializationCode(String name) {
-            return "";
-        }
-
+        public void getSerializationCode(StringBuilder sb, String name) {}
         @Override
-        public String getDeserializationCode(String name) {
-            return "";
-        }
-
+        public void getDeserializationCode(StringBuilder sb, String name) {}
         @Override
-        public String getUpdateCode(String name) {
-            return "";
-        }
+        public void getUpdateCode(StringBuilder sb, String name) {}
     });
 
     private ArrayList<Type> types;

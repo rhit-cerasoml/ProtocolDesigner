@@ -1,7 +1,7 @@
 package pd.dataobject.types;
 
 public interface SerializationMode {
-    String getSerializationCode(String name);
-    String getDeserializationCode(String name);
-    String getUpdateCode(String name);
+    void getSerializationCode(StringBuilder sb, String name);
+    void getDeserializationCode(StringBuilder sb, String name);
+    void getUpdateCode(StringBuilder sb, String name);
 }

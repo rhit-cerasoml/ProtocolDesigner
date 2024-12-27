@@ -10,10 +10,10 @@ public class Main {
             pm.setBuildDirectory("src/demo/build");
             pm.setCacheDirectory("src/demo/cache");
             pm.save();
-            pm.build();
+            //pm.build();
             //pm.revertBuild();
-            //ProjectManager pm2 = new ProjectManager("src/demo/demoproject.pd");
-            //pm2.build();
+            ProjectManager pm2 = new ProjectManager("src/demo/demoproject.pd");
+            pm2.build();
         }catch (Exception e){
             e.printStackTrace();
         }

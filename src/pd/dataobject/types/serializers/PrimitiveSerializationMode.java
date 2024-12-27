@@ -13,17 +13,27 @@ public class PrimitiveSerializationMode implements SerializationMode {
     }
 
     @Override
-    public String getSerializationCode(String name) {
-        return "out." + writeMethod + "(" + name + ");\n";
+    public void getSerializationCode(StringBuilder sb, String name) {
+        sb.append("out.");
+        sb.append(writeMethod);
+        sb.append("(");
+        sb.append(name);
+        sb.append(");\n");
     }
 
     @Override
-    public String getDeserializationCode(String name) {
-        return name + " = in." + readMethod + "();\n";
+    public void getDeserializationCode(StringBuilder sb, String name) {
+        sb.append(name);
+        sb.append(" = in.");
+        sb.append(readMethod);
+        sb.append("();\n");
     }
 
     @Override
-    public String getUpdateCode(String name) {
-        return name + " = in." + readMethod + "();\n";
+    public void getUpdateCode(StringBuilder sb, String name) {
+        sb.append(name);
+        sb.append(" = in.");
+        sb.append(readMethod);
+        sb.append("();\n");
     }
 }

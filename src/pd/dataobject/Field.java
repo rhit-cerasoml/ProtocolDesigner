@@ -45,6 +45,11 @@ public class Field implements Serializable {
         }
     }
 
+    public void buildBaseSerialize(StringBuilder sb) throws Exception {
+        if(this.retention == Retention.CLIENT) {
+            getType().buildSerialize(sb, name);
+        }
+    }
 
     private void buildDeclaration(StringBuilder sb, String modifier) throws Exception {
         sb.append("\t");

@@ -11,25 +11,25 @@ public class ObjectSerializationMode implements SerializationMode {
     }
 
     @Override
-    public String getSerializationCode(String name) {
-        return "\t\t" +
-                name +
-                ".serialize(out);\n";
+    public void getSerializationCode(StringBuilder sb, String name) {
+        sb.append("\t\t");
+        sb.append(name);
+        sb.append(".serialize(out);\n");
     }
 
     @Override
-    public String getDeserializationCode(String name) {
-        return "\t\tthis." +
-                name +
-                " = new " +
-                type.getTypeName() +
-                "(in);\n";
+    public void getDeserializationCode(StringBuilder sb, String name) {
+        sb.append("\t\tthis.");
+        sb.append(name);
+        sb.append(" = new ");
+        sb.append(type.getTypeName());
+        sb.append("(in);\n");
     }
 
     @Override
-    public String getUpdateCode(String name) {
-        return "\t\tthis." +
-                name +
-                ".loadFromSerial(in);\n";
+    public void getUpdateCode(StringBuilder sb, String name) {
+        sb.append("\t\tthis.");
+        sb.append(name);
+        sb.append(".loadFromSerial(in);\n");
     }
 }

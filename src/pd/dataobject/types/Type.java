@@ -32,4 +32,8 @@ public class Type implements Serializable {
     public Type(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         this.typeName = in.readString();
     }
+
+    public void buildSerialize(StringBuilder sb, String name) {
+        serializationMode.getSerializationCode(sb, name);
+    }
 }
