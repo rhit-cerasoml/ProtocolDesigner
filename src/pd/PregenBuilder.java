@@ -12,6 +12,7 @@ public class PregenBuilder {
                 "public class PregeneratedFiles {\n" +
                 "    \n" +
                 "\tpublic static final String DESERIALIZER = \"\"\"\n" + readFile("src/pd/util/serial/Deserializer.java") + "\"\"\";\n" +
+                "\tpublic static final String SERIALIZER = \"\"\"\n" + readFile("src/pd/util/serial/Serializer.java") + "\"\"\";\n" +
                 "\tpublic static final String SERIALIZABLE = \"\"\"\n" + readFile("src/pd/util/serial/Serializable.java") + "\"\"\";\n" +
                 "\tpublic static final String SERIALIZING_INPUT_STREAM = \"\"\"\n" + readFile("src/pd/util/serial/SerializingInputStream.java") + "\"\"\";\n" +
                 "\tpublic static final String SERIALIZING_OUTPUT_STREAM = \"\"\"\n" + readFile("src/pd/util/serial/SerializingOutputStream.java") + "\"\"\";\n" +

@@ -20,6 +20,11 @@ public class UtilityArtifacts {
         deserializer.append(PregeneratedFiles.DESERIALIZER);
         artifacts.add(deserializer);
 
+        Artifact serializer = new Artifact("util/serial/Serializer.java");
+        serializer.appendFreeSegment("package");
+        serializer.append(PregeneratedFiles.SERIALIZER);
+        artifacts.add(serializer);
+
         Artifact serializable = new Artifact("util/serial/Serializable.java");
         serializable.appendFreeSegment("package");
         serializable.append(PregeneratedFiles.SERIALIZABLE);

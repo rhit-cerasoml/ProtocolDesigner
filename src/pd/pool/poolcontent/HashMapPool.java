@@ -1,19 +1,19 @@
 package pd.pool.poolcontent;
 
-import pd.util.serial.Deserializer;
-import pd.util.serial.Serializable;
-import pd.util.serial.SerializingInputStream;
-import pd.util.serial.SerializingOutputStream;
+import pd.util.serial.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class HashMapPool<Key extends Serializable, Value extends Serializable> implements PoolContent<Key, Value> {
+public class HashMapPool<Key, Value extends Serializable> implements PoolContent<Key, Value> {
     HashMap<Key, Value> content = new HashMap<>();
     Deserializer<Key> keyDeserializer;
     Deserializer<Value> valueDeserializer;
+    Serializer<Key> keySerializer;
 
-    public HashMapPool(Deserializer<Key> keyDeserializer, Deserializer<Value> valueDeserializer){
+    public HashMapPool(Serializer<Key> keySerializer, Deserializer<Key> keyDeserializer, Deserializer<Value> valueDeserializer){
+        this.keySerializer = keySerializer;
         this.keyDeserializer = keyDeserializer;
         this.valueDeserializer = valueDeserializer;
     }
@@ -44,8 +44,13 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
     }
 
     @Override
+    public int size() {
+        return content.size();
+    }
+
+    @Override
     public void serializeKey(Key key, SerializingOutputStream out) {
-        key.serialize(out);
+        keySerializer.serialize(key, out);
     }
 
     @Override
@@ -62,7 +67,7 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
     public void serialize(SerializingOutputStream out) {
         out.writeInt(content.size());
         for(Map.Entry<Key, Value> entry : content.entrySet()){
-            entry.getKey().serialize(out);
+            keySerializer.serialize(entry.getKey(), out);
             entry.getValue().serialize(out);
         }
     }
@@ -73,5 +78,10 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
         for(int i = 0; i < len; i++){
             this.content.put(deserializeKey(in), valueDeserializer.deserialize(in));
         }
+    }
+
+    @Override
+    public Iterator<Map.Entry<Key, Value>> iterator() {
+        return content.entrySet().iterator();
     }
 }
