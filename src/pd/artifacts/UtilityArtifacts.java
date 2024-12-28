@@ -11,7 +11,7 @@ public class UtilityArtifacts {
     }
 
     private void buildSerializationClasses(){
-        Artifact deserializer = new Artifact("util/Deserializer.java");
+        Artifact deserializer = new Artifact("util/serial/Deserializer.java");
         deserializer.appendFreeSegment("package");
         deserializer.append("""
                 public interface Deserializer<T> {
@@ -19,7 +19,7 @@ public class UtilityArtifacts {
                 }""");
         artifacts.add(deserializer);
 
-        Artifact serializable = new Artifact("util/Serializable.java");
+        Artifact serializable = new Artifact("util/serial/Serializable.java");
         serializable.appendFreeSegment("package");
         serializable.append("""
                 public interface Serializable {
@@ -27,7 +27,7 @@ public class UtilityArtifacts {
                 }""");
         artifacts.add(serializable);
 
-        Artifact serializingInputStream = new Artifact("util/SerializingInputStream.java");
+        Artifact serializingInputStream = new Artifact("util/serial/SerializingInputStream.java");
         serializingInputStream.appendFreeSegment("package");
         serializingInputStream.append("""
                 import java.io.ByteArrayInputStream;
@@ -127,7 +127,7 @@ public class UtilityArtifacts {
                 }""");
         artifacts.add(serializingInputStream);
 
-        Artifact serializingOutputStream = new Artifact("util/SerializingOutputStream.java");
+        Artifact serializingOutputStream = new Artifact("util/serial/SerializingOutputStream.java");
         serializingOutputStream.appendFreeSegment("package");
         serializingOutputStream.append("""
                 import java.io.ByteArrayOutputStream;
@@ -189,6 +189,5 @@ public class UtilityArtifacts {
 
                 }""");
         artifacts.add(serializingOutputStream);
-
     }
 }

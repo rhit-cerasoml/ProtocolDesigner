@@ -25,3 +25,4 @@ replay_pid*
 
 # Demo files
 src/demo/
+src/pd/generated/
