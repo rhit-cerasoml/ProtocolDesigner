@@ -11,6 +11,7 @@ public class UtilityArtifacts {
         artifacts = new ArrayList<>();
         buildSerializationClasses();
         buildNetClasses();
+        buildPoolClasses();
     }
 
     private void buildSerializationClasses(){
@@ -51,6 +52,16 @@ public class UtilityArtifacts {
         listener.append(PregeneratedFiles.LISTENER);
         artifacts.add(listener);
 
+        Artifact nullListener = new Artifact("util/net/connection/NullListener.java");
+        nullListener.appendFreeSegment("package");
+        nullListener.append(PregeneratedFiles.NULL_LISTENER);
+        artifacts.add(nullListener);
+
+        Artifact connectionGroup = new Artifact("util/net/connection/ConnectionGroup.java");
+        connectionGroup.appendFreeSegment("package");
+        connectionGroup.append(PregeneratedFiles.CONNECTION_GROUP);
+        artifacts.add(connectionGroup);
+
         Artifact socketConnection = new Artifact("util/net/connection/SocketConnection.java");
         socketConnection.appendFreeSegment("package");
         socketConnection.append(PregeneratedFiles.SOCKET_CONNECTION);
@@ -75,5 +86,27 @@ public class UtilityArtifacts {
         protocolManager.appendFreeSegment("package");
         protocolManager.append(PregeneratedFiles.PROTOCOL_MANAGER);
         artifacts.add(protocolManager);
+    }
+
+    private void buildPoolClasses() {
+        Artifact pool = new Artifact("util/pool/Pool.java");
+        pool.appendFreeSegment("package");
+        pool.append(PregeneratedFiles.POOL);
+        artifacts.add(pool);
+
+        Artifact poolContent = new Artifact("util/pool/PoolContent.java");
+        poolContent.appendFreeSegment("package");
+        poolContent.append(PregeneratedFiles.POOL_CONTENT);
+        artifacts.add(poolContent);
+
+        Artifact arrayListPool = new Artifact("util/pool/ArrayListPool.java");
+        arrayListPool.appendFreeSegment("package");
+        arrayListPool.append(PregeneratedFiles.ARRAYLIST_POOL);
+        artifacts.add(arrayListPool);
+
+        Artifact hashMapPool = new Artifact("util/pool/HashMapPool.java");
+        hashMapPool.appendFreeSegment("package");
+        hashMapPool.append(PregeneratedFiles.HASHMAP_POOL);
+        artifacts.add(hashMapPool);
     }
 }

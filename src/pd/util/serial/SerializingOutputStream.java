@@ -50,6 +50,11 @@ public class SerializingOutputStream extends ByteArrayOutputStream {
         write(b ? 0x01 : 0x00);
     }
 
+    public void writeByteArray(byte[] b){
+        writeInt(b.length);
+        writeBytes(b);
+    }
+
     public <T extends Serializable> void writeArrayList(ArrayList<T> array){
         writeInt(array.size());
         for(Serializable element : array){

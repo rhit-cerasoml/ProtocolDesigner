@@ -1,5 +1,7 @@
 package pd.net.connection;
 
+import pd.util.serial.SerializingInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,7 +12,7 @@ public class SocketConnection extends Thread implements Connection {
     private Socket socket;
     private InputStream inputStream;
     private OutputStream outputStream;
-    private Listener listener;
+    private Listener listener = new NullListener();
     private volatile boolean open = true; // no lock needed since we assign this value prior to the closing of socket
 
     public SocketConnection(Socket socket) throws IOException {
@@ -44,6 +46,7 @@ public class SocketConnection extends Thread implements Connection {
                 listener.accept(inputStream.readAllBytes());
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (SerializingInputStream.InvalidStreamLengthException ignored) {
             }
         }
     }

@@ -1,4 +1,4 @@
-package pd.pool;
+package pd.pool.poolcontent;
 
 import pd.util.serial.Deserializer;
 import pd.util.serial.Serializable;
@@ -37,11 +37,6 @@ public class ArrayListPool<T extends Serializable> implements PoolContent<Intege
     @Override
     public void serializeKey(Integer index, SerializingOutputStream out) {
         out.writeInt(index);
-    }
-
-    @Override
-    public void serializeValue(T element, SerializingOutputStream out) {
-        element.serialize(out);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package pd.pool;
+package pd.pool.poolcontent;
 
 import pd.util.serial.Deserializer;
 import pd.util.serial.Serializable;
@@ -49,11 +49,6 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
     }
 
     @Override
-    public void serializeValue(Value value, SerializingOutputStream out) {
-        value.serialize(out);
-    }
-
-    @Override
     public Key deserializeKey(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         return keyDeserializer.deserialize(in);
     }
@@ -76,7 +71,7 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
     public void deserialize(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         int len = in.readInt();
         for(int i = 0; i < len; i++){
-            this.content.put(deserializeKey(in), deserializeValue(in));
+            this.content.put(deserializeKey(in), valueDeserializer.deserialize(in));
         }
     }
 }

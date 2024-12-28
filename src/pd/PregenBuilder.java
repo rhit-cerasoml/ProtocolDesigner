@@ -20,12 +20,19 @@ public class PregenBuilder {
                 "\tpublic static final String LISTENER = \"\"\"\n" + readFile("src/pd/net/connection/Listener.java") + "\"\"\";\n" +
                 "\tpublic static final String DIRECT_CONNECTION = \"\"\"\n" + readFile("src/pd/net/connection/DirectConnection.java") + "\"\"\";\n" +
                 "\tpublic static final String SOCKET_CONNECTION = \"\"\"\n" + readFile("src/pd/net/connection/SocketConnection.java") + "\"\"\";\n" +
+                "\tpublic static final String CONNECTION_GROUP = \"\"\"\n" + readFile("src/pd/net/connection/ConnectionGroup.java") + "\"\"\";\n" +
+                "\tpublic static final String NULL_LISTENER = \"\"\"\n" + readFile("src/pd/net/connection/NullListener.java") + "\"\"\";\n" +
                 "\n" +
                 "\tpublic static final String CONNECTION_ACCEPTOR = \"\"\"\n" + readFile("src/pd/net/host/ConnectionAcceptor.java") + "\"\"\";\n" +
                 "\tpublic static final String TCP_HOST = \"\"\"\n" + readFile("src/pd/net/host/TCPHost.java") + "\"\"\";\n" +
                 "\n" +
                 "\tpublic static final String PROTOCOL = \"\"\"\n" + readFile("src/pd/net/protocol/Protocol.java") + "\"\"\";\n" +
                 "\tpublic static final String PROTOCOL_MANAGER = \"\"\"\n" + readFile("src/pd/net/protocol/ProtocolManager.java") + "\"\"\";\n" +
+                "\n" +
+                "\tpublic static final String POOL = \"\"\"\n" + readFile("src/pd/pool/Pool.java") + "\"\"\";\n" +
+                "\tpublic static final String POOL_CONTENT = \"\"\"\n" + readFile("src/pd/pool/poolcontent/PoolContent.java") + "\"\"\";\n" +
+                "\tpublic static final String ARRAYLIST_POOL = \"\"\"\n" + readFile("src/pd/pool/poolcontent/ArrayListPool.java") + "\"\"\";\n" +
+                "\tpublic static final String HASHMAP_POOL = \"\"\"\n" + readFile("src/pd/pool/poolcontent/HashMapPool.java") + "\"\"\";\n" +
                 "}";
         FileWriter fout = new FileWriter("src/pd/generated/PregeneratedFiles.java");
         fout.write(output);

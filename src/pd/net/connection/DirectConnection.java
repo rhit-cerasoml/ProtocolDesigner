@@ -1,9 +1,11 @@
 package pd.net.connection;
 
+import pd.util.serial.SerializingInputStream;
+
 import java.io.IOException;
 
 public class DirectConnection implements Connection {
-    private Listener listener;
+    private Listener listener = new NullListener();
     private DirectConnection endpoint;
     private boolean open = true;
 
@@ -22,7 +24,11 @@ public class DirectConnection implements Connection {
     @Override
     public void send(byte[] data) throws IOException {
         if(!open) throw new IOException("Connection Closed");
-        this.endpoint.recv(data);
+        try {
+            this.endpoint.recv(data);
+        }catch (Exception e){
+            throw new IOException("Direct Receive Failed");
+        }
     }
 
     @Override
@@ -40,7 +46,7 @@ public class DirectConnection implements Connection {
         }
     }
 
-    private void recv(byte[] data){
+    private void recv(byte[] data) throws SerializingInputStream.InvalidStreamLengthException {
         listener.accept(data);
     }
 }

@@ -80,6 +80,15 @@ public class SerializingInputStream extends ByteArrayInputStream {
         return read() == 0x01;
     }
 
+    public byte[] readByteArray() throws InvalidStreamLengthException {
+        int len = readInt();
+        try{
+            return readNBytes(len);
+        }catch (Exception e){
+            throw new InvalidStreamLengthException("Issue while reading byte array: " + e);
+        }
+    }
+
     public <T> ArrayList<T> readArrayList(Deserializer<T> deserializer) throws InvalidStreamLengthException {
         ArrayList<T> arrayList = new ArrayList<>();
         int len = readInt();
