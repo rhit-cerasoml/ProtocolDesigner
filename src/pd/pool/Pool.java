@@ -1,12 +1,14 @@
 package pd.pool;
 
-import pd.util.serial.Serializable;
+import java.util.ArrayDeque;
 
-import java.util.ArrayList;
+public class Pool<Key, Value> {
+    PoolContent<Key, Value> content;
+    ArrayDeque<Action> requestQueue;
 
-public class Pool {
-    private ArrayList<Serializable> elements;
-    public Pool(){
-        elements = new ArrayList<>();
+
+
+    private static class Action<Key, Value> {
+
     }
 }
