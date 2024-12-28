@@ -16,9 +16,9 @@ public class Pool<Key, Value extends Serializable> {
     private final boolean owner;
     private final PoolContent<Key, Value> content;
     private final ReentrantLock queueLock = new ReentrantLock();
-    private ArrayDeque<Action> requestQueue;
-    private ProtocolManager protocolManager;
-    private Protocol protocol;
+    private final ArrayDeque<Action> requestQueue = new ArrayDeque<>();
+    private final ProtocolManager protocolManager;
+    private final Protocol protocol;
 
     public Pool(PoolContent<Key, Value> content, ProtocolManager protocolManager, boolean owner){
         this.content = content;
@@ -27,9 +27,15 @@ public class Pool<Key, Value extends Serializable> {
         this.protocol = new Protocol() {
             @Override
             public void accept(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
-                queueLock.lock();
-                requestQueue.push(new Action(in));
-                queueLock.unlock();
+                if(owner) {
+                    queueLock.lock();
+                    requestQueue.push(new Action(in));
+                    queueLock.unlock();
+                }else{
+                    try {
+                        (new Action(in)).execute();
+                    }catch (IOException ignored){}
+                }
             }
         };
         protocolManager.addProtocol(protocol);

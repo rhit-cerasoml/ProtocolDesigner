@@ -51,7 +51,7 @@ public class DirectConnection implements Connection {
         return !open;
     }
 
-    private void recv(byte[] data) throws SerializingInputStream.InvalidStreamLengthException {
+    private void recv(byte[] data) throws SerializingInputStream.InvalidStreamLengthException, IOException {
         listener.accept(data);
     }
 }

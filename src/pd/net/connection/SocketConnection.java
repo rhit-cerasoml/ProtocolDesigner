@@ -24,7 +24,16 @@ public class SocketConnection extends Thread implements Connection {
 
     @Override
     public void send(byte[] data) throws IOException {
+        byte[] buf = new byte[4];
+        int val = data.length;
+
+        for(int i = 4; i != 0; i--) {
+            buf[i-1] = (byte) (val & 0xFF);
+            val <<= 8;
+        }
+        outputStream.write(buf);
         outputStream.write(data);
+        outputStream.flush();
     }
 
     @Override
@@ -48,9 +57,16 @@ public class SocketConnection extends Thread implements Connection {
         super.run();
         while(open){
             try {
-                listener.accept(inputStream.readAllBytes());
+                byte[] binlen = inputStream.readNBytes(4);
+                int len = 0;
+                for(int i = 0; i < 4; i++) {
+                    len <<= 8;
+                    len |= binlen[i];
+                }
+                listener.accept(inputStream.readNBytes(len));
             } catch (IOException e) {
                 e.printStackTrace();
+                open = false;
             } catch (SerializingInputStream.InvalidStreamLengthException ignored) {
             }
         }
