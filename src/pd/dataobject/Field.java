@@ -10,45 +10,35 @@ public class Field implements Serializable {
     private int typeIndex;
     private String name;
     private boolean visible;
-    private Target target;
 
     // not saved
     private TypeManager typeManager;
 
-    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible, Target retention){
+    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible){
         this.typeManager = typeManager;
         this.typeIndex = typeIndex;
         this.name = name;
         this.visible = visible;
-        this.target = retention;
     }
 
     public void setTypeManager(TypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
-    public void buildDeclaration(StringBuilder sb, Target outputTarget) throws Exception {
-        if(this.target == outputTarget) {
-            buildDeclaration(sb, this.visible ? "public" : "protected");
-        }
+    public void buildDeclaration(StringBuilder sb) throws Exception {
+        buildDeclaration(sb, this.visible ? "public" : "protected");
     }
 
-    public void buildSerialize(StringBuilder sb, Target outputTarget) throws Exception {
-        if(this.target == outputTarget) {
-            getType().buildSerialize(sb, name);
-        }
+    public void buildSerialize(StringBuilder sb) throws Exception {
+        getType().buildSerialize(sb, name);
     }
 
-    public void buildDeserialize(StringBuilder sb, Target outputTarget) throws Exception {
-        if(this.target == outputTarget) {
-            getType().buildDeserialize(sb, name);
-        }
+    public void buildDeserialize(StringBuilder sb) throws Exception {
+        getType().buildDeserialize(sb, name);
     }
 
-    public void buildUpdate(StringBuilder sb, Target outputTarget) throws Exception {
-        if(this.target == outputTarget) {
-            getType().buildUpdate(sb, name);
-        }
+    public void buildUpdate(StringBuilder sb) throws Exception {
+        getType().buildUpdate(sb, name);
     }
 
     private void buildDeclaration(StringBuilder sb, String modifier) throws Exception {
@@ -72,7 +62,6 @@ public class Field implements Serializable {
         out.writeInt(typeIndex);
         out.writeString(name);
         out.writeBoolean(visible);
-        target.serialize(out);
     }
 
     // Deserialize
@@ -80,6 +69,5 @@ public class Field implements Serializable {
         this.typeIndex = in.readInt();
         this.name = in.readString();
         this.visible = in.readBoolean();
-        target = Target.values()[in.readInt()];
     }
 }

@@ -10,48 +10,41 @@ import java.util.ArrayList;
 
 public class DataObject implements Serializable {
     private String className;
+    private boolean buildLocals;
     private ArrayList<Field> fields;
 
     // not saved
     private TypeManager typeManager;
 
-    public DataObject(String name, TypeManager typeManager){
+    public DataObject(String name, boolean buildLocals, TypeManager typeManager){
         this.className = name;
+        this.buildLocals = buildLocals;
         this.typeManager = typeManager;
         fields = new ArrayList<>();
 
-        fields.add(new Field(typeManager, 0, "x", true, Target.COMMON));
+        fields.add(new Field(typeManager, 0, "x", true));
+        fields.add(new Field(typeManager, 0, "y", true));
+        fields.add(new Field(typeManager, 0, "z", true));
     }
 
-    public Artifact buildClass(Target target) throws Exception {
+    public Artifact buildClass() throws Exception {
         Artifact artifact;
         String suffix;
-        if(target == Target.COMMON){
-            artifact = new Artifact("base/" + className + "Base.java");
-            suffix = "Base";
-        }else if(target == Target.CLIENT){
-            artifact = new Artifact("client/" + className + "Client.java");
-            suffix = "Client";
-        }else{
-            artifact = new Artifact("server/" + className + "Server.java");
-            suffix = "Server";
-        }
+        artifact = new Artifact(className + ".java");
 
         artifact.appendFreeSegment("imports");
 
         StringBuilder sb = new StringBuilder();
         sb.append("public ");
-        if(target == Target.COMMON) sb.append("abstract ");
         sb.append("class ");
         sb.append(className);
-        sb.append(suffix);
-        sb.append(" {\n");
+        sb.append(" implements Serializable {\n");
         for(Field f : fields){
-            f.buildDeclaration(sb, target);
+            f.buildDeclaration(sb);
         }
-        buildSerializationFunction(sb, target);
-        buildDeserializationFunction(sb, target);
-        buildUpdateFunction(sb, target);
+        buildSerializationFunction(sb);
+        buildDeserializationFunction(sb);
+        buildUpdateFunction(sb);
         artifact.append(sb.toString()); // generated fields/functions
 
         artifact.appendFreeSegment("body");
@@ -61,37 +54,28 @@ public class DataObject implements Serializable {
         return artifact;
     }
 
-    private void buildSerializationFunction(StringBuilder sb, Target target) throws Exception {
+    private void buildSerializationFunction(StringBuilder sb) throws Exception {
         sb.append("\tpublic void serialize(SerializingInputStream in) {\n");
-        if(target != Target.COMMON){
-            sb.append("\t\tsuper.serialize(in);\n");
-        }
         for(Field f : fields){
-            f.buildSerialize(sb, target);
+            f.buildSerialize(sb);
         }
         sb.append("\t}\n");
     }
 
-    private void buildDeserializationFunction(StringBuilder sb, Target target) throws Exception {
+    private void buildDeserializationFunction(StringBuilder sb) throws Exception {
         sb.append("\tpublic ");
         sb.append(className);
         sb.append("(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {\n");
-        if(target != Target.COMMON){
-            sb.append("\t\tsuper(in);\n");
-        }
         for(Field f : fields){
-            f.buildDeserialize(sb, target);
+            f.buildDeserialize(sb);
         }
         sb.append("\t}\n");
     }
 
-    private void buildUpdateFunction(StringBuilder sb, Target target) throws Exception {
+    private void buildUpdateFunction(StringBuilder sb) throws Exception {
         sb.append("\tpublic void update(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {\n");
-        if(target != Target.COMMON){
-            sb.append("\t\tsuper.update(in);\n");
-        }
         for(Field f : fields){
-            f.buildUpdate(sb, target);
+            f.buildUpdate(sb);
         }
         sb.append("\t}\n");
     }
@@ -99,12 +83,14 @@ public class DataObject implements Serializable {
     @Override
     public void serialize(SerializingOutputStream out) {
         out.writeString(className);
+        out.writeBoolean(buildLocals);
         out.writeArrayList(fields);
     }
 
     // Deserialize
     public DataObject(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         this.className = in.readString();
+        this.buildLocals = in.readBoolean();
         this.fields = in.readArrayList(Field::new);
     }
 
@@ -114,7 +100,5 @@ public class DataObject implements Serializable {
             f.setTypeManager(typeManager);
         }
     }
-
-
 
 }
