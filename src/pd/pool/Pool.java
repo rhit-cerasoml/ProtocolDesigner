@@ -13,7 +13,7 @@ import java.util.ArrayDeque;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Pool<Key, Value extends Serializable> {
-    private final boolean owner = false;
+    private final boolean owner;
     private final PoolContent<Key, Value> content;
     private final ReentrantLock queueLock = new ReentrantLock();
     private ArrayDeque<Action> requestQueue;
@@ -23,6 +23,7 @@ public class Pool<Key, Value extends Serializable> {
     public Pool(PoolContent<Key, Value> content, ProtocolManager protocolManager, boolean owner){
         this.content = content;
         this.protocolManager = protocolManager;
+        this.owner = owner;
         this.protocol = new Protocol() {
             @Override
             public void accept(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
@@ -32,6 +33,11 @@ public class Pool<Key, Value extends Serializable> {
             }
         };
         protocolManager.addProtocol(protocol);
+        if(!owner){
+            try {
+                sync();
+            }catch (Exception ignored){}
+        }
     }
 
     public void processActions() throws IOException, SerializingInputStream.InvalidStreamLengthException {

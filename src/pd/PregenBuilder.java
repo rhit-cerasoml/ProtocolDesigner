@@ -15,6 +15,7 @@ public class PregenBuilder {
                 "\tpublic static final String SERIALIZABLE = \"\"\"\n" + readFile("src/pd/util/serial/Serializable.java") + "\"\"\";\n" +
                 "\tpublic static final String SERIALIZING_INPUT_STREAM = \"\"\"\n" + readFile("src/pd/util/serial/SerializingInputStream.java") + "\"\"\";\n" +
                 "\tpublic static final String SERIALIZING_OUTPUT_STREAM = \"\"\"\n" + readFile("src/pd/util/serial/SerializingOutputStream.java") + "\"\"\";\n" +
+                "\tpublic static final String OPTIONAL = \"\"\"\n" + readFile("src/pd/util/Optional.java") + "\"\"\";\n" +
                 "\n" +
                 "\tpublic static final String CONNECTION = \"\"\"\n" + readFile("src/pd/net/connection/Connection.java") + "\"\"\";\n" +
                 "\tpublic static final String LISTENER = \"\"\"\n" + readFile("src/pd/net/connection/Listener.java") + "\"\"\";\n" +
@@ -42,7 +43,7 @@ public class PregenBuilder {
 
     static String readFile(String path) throws IOException {
         String content = Files.readString(Path.of(path));
-        int start = Math.max(content.indexOf("class"), content.indexOf("interface"));
+        int start = Math.max(content.indexOf("public class"), content.indexOf("public interface"));
         return content.substring(start);
     }
 }

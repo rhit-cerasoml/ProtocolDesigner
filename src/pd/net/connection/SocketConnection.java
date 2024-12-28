@@ -39,6 +39,11 @@ public class SocketConnection extends Thread implements Connection {
     }
 
     @Override
+    public boolean isClosed() {
+        return !open;
+    }
+
+    @Override
     public void run() {
         super.run();
         while(open){

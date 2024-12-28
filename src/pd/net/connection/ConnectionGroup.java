@@ -6,16 +6,23 @@ import java.util.ArrayList;
 public class ConnectionGroup implements Connection {
     private ArrayList<Connection> connections = new ArrayList<>();
     private Listener listener = new NullListener();
+    private boolean open = true;
 
     public void addConnection(Connection connection){
+        if(!open) return;
         connection.setListener(listener);
         connections.add(connection);
     }
 
     @Override
     public void send(byte[] data) throws IOException {
-        for(Connection connection : connections){
-            connection.send(data);
+        if(!open) throw new IOException("Connection Closed");
+        for(int i = connections.size() - 1; i >= 0; i--){
+            if(connections.get(i).isClosed()){
+                connections.remove(i);
+                continue;
+            }
+            connections.get(i).send(data);
         }
     }
 
@@ -29,8 +36,14 @@ public class ConnectionGroup implements Connection {
 
     @Override
     public void close() throws IOException {
+        open = false;
         for(Connection connection : connections){
             connection.close();
         }
+    }
+
+    @Override
+    public boolean isClosed() {
+        return !open;
     }
 }

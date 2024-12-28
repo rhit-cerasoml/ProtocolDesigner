@@ -34,6 +34,11 @@ public class UtilityArtifacts {
         serializingOutputStream.appendFreeSegment("package");
         serializingOutputStream.append(PregeneratedFiles.SERIALIZING_OUTPUT_STREAM);
         artifacts.add(serializingOutputStream);
+
+        Artifact optional = new Artifact("util/serial/Optional.java");
+        optional.appendFreeSegment("package");
+        optional.append(PregeneratedFiles.OPTIONAL);
+        artifacts.add(optional);
     }
 
     private void buildNetClasses() {
