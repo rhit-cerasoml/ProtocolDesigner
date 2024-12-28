@@ -34,6 +34,8 @@ public class PregenBuilder {
     }
 
     static String readFile(String path) throws IOException {
-        return Files.readString(Path.of(path));
+        String content = Files.readString(Path.of(path));
+        int start = Math.max(content.indexOf("class"), content.indexOf("interface"));
+        return content.substring(start);
     }
 }
