@@ -1,5 +1,7 @@
 package pd.pool;
 
+import pd.util.serial.Serializable;
+
 import java.util.ArrayDeque;
 
 public class Pool<Key, Value> {
@@ -9,6 +11,6 @@ public class Pool<Key, Value> {
 
 
     private static class Action<Key, Value> {
-
+        
     }
 }

@@ -62,4 +62,21 @@ public class HashMapPool<Key extends Serializable, Value extends Serializable> i
     public Value deserializeValue(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         return valueDeserializer.deserialize(in);
     }
+
+    @Override
+    public void serialize(SerializingOutputStream out) {
+        out.writeInt(content.size());
+        for(Map.Entry<Key, Value> entry : content.entrySet()){
+            entry.getKey().serialize(out);
+            entry.getValue().serialize(out);
+        }
+    }
+
+    @Override
+    public void deserialize(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
+        int len = in.readInt();
+        for(int i = 0; i < len; i++){
+            this.content.put(deserializeKey(in), deserializeValue(in));
+        }
+    }
 }

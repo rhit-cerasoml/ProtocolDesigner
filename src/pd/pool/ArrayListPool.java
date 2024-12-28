@@ -53,4 +53,14 @@ public class ArrayListPool<T extends Serializable> implements PoolContent<Intege
     public T deserializeValue(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
         return deserializer.deserialize(in);
     }
+
+    @Override
+    public void serialize(SerializingOutputStream out) {
+        out.writeArrayList(content);
+    }
+
+    @Override
+    public void deserialize(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException {
+        this.content = in.readArrayList(deserializer);
+    }
 }

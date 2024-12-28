@@ -13,4 +13,7 @@ public interface PoolContent<Key, Value> {
     void serializeValue(Value value, SerializingOutputStream out);
     Key deserializeKey(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException;
     Value deserializeValue(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException;
+
+    void serialize(SerializingOutputStream out);
+    void deserialize(SerializingInputStream in) throws SerializingInputStream.InvalidStreamLengthException;
 }
