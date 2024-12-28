@@ -1,7 +1,9 @@
 package pd.dataobject;
 
 import pd.TypeManager;
+import pd.dataobject.types.ReferenceContext;
 import pd.dataobject.types.Type;
+import pd.util.Optional;
 import pd.util.serial.Serializable;
 import pd.util.serial.SerializingInputStream;
 import pd.util.serial.SerializingOutputStream;
@@ -10,6 +12,7 @@ public class Field implements Serializable {
     private int typeIndex;
     private String name;
     private boolean visible;
+    private Optional<ReferenceContext> referenceContext = new Optional<>(ReferenceContext::new);
 
     // not saved
     private TypeManager typeManager;
@@ -19,6 +22,14 @@ public class Field implements Serializable {
         this.typeIndex = typeIndex;
         this.name = name;
         this.visible = visible;
+    }
+
+    public Field(TypeManager typeManager, int typeIndex, String name, boolean visible, ReferenceContext referenceContext){
+        this.typeManager = typeManager;
+        this.typeIndex = typeIndex;
+        this.name = name;
+        this.visible = visible;
+        this.referenceContext.set(referenceContext);
     }
 
     public void setTypeManager(TypeManager typeManager) {
@@ -62,6 +73,7 @@ public class Field implements Serializable {
         out.writeInt(typeIndex);
         out.writeString(name);
         out.writeBoolean(visible);
+        referenceContext.write(out);
     }
 
     // Deserialize
@@ -69,5 +81,6 @@ public class Field implements Serializable {
         this.typeIndex = in.readInt();
         this.name = in.readString();
         this.visible = in.readBoolean();
+        this.referenceContext.read(in);
     }
 }

@@ -23,8 +23,8 @@ public class DataObject implements Serializable {
         fields = new ArrayList<>();
 
         fields.add(new Field(typeManager, 0, "x", true));
-        fields.add(new Field(typeManager, 0, "y", true));
-        fields.add(new Field(typeManager, 0, "z", true));
+        fields.add(new Field(typeManager, 1, "y", true));
+        fields.add(new Field(typeManager, 2, "z", true));
     }
 
     public Artifact buildClass() throws Exception {

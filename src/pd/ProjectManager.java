@@ -40,7 +40,6 @@ public class ProjectManager {
         this.typeManager = new TypeManager();
     }
 
-
     public void setBuildDirectory(String buildDirectory) throws Exception {
         this.buildDirectory.set(buildDirectory);
         validateCacheDirectory();

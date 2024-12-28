@@ -9,8 +9,4 @@ public class Pool {
     public Pool(){
         elements = new ArrayList<>();
     }
-
-
-
-
 }
