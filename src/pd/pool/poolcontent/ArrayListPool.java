@@ -37,6 +37,11 @@ public class ArrayListPool<T extends Serializable> implements PoolContent<Intege
     }
 
     @Override
+    public void update(Integer index, T element) {
+        content.set(index, element);
+    }
+
+    @Override
     public int size() {
         return content.size();
     }
