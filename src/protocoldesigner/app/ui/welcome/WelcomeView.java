@@ -2,6 +2,7 @@ package protocoldesigner.app.ui.welcome;
 
 import protocoldesigner.app.model.ApplicationState;
 import protocoldesigner.app.ui.UIManager;
+import protocoldesigner.app.util.PanelList;
 import protocoldesigner.app.util.RecursiveFileFilter;
 
 
@@ -20,6 +21,7 @@ public class WelcomeView extends JFrame {
 
         setTitle("Protocol Designer - Project Selection");
         setSize(900, 600);
+        setResizable(false);
         setLocationRelativeTo(null);
         buildUI();
         setVisible(true);
@@ -106,10 +108,22 @@ public class WelcomeView extends JFrame {
         topPanel.setPreferredSize(new Dimension(200, searchBar.getPreferredSize().height));
         projectPanel.add(topPanel, BorderLayout.NORTH);
 
-        JList<String> list = new JList<String>(new String[]{"test1", "test2"});
+        //JList<String> list = new JList<String>(appState.getWelcomeMenuData().projectHistory.toArray(new String[0]));
+        //JList<String> list = new JList<String>(new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"});
+
+        PanelList list = new PanelList();
+        for(String s : appState.getWelcomeMenuData().projectHistory) {
+            JPanel panel = new JPanel(new BorderLayout());
+            JLabel label = new JLabel(s);
+            label.setPreferredSize(new Dimension(600, 60));
+            label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+            panel.add(label, BorderLayout.CENTER);
+            panel.add(new JButton("X"), BorderLayout.EAST);
+            list.addElement(panel);
+        }
         projectPanel.add(list);
         list.setPreferredSize(new Dimension(800, 800));
-        list.setCellRenderer(new WelcomeProjectListCellRenderer());
+        //list.setCellRenderer(new WelcomeProjectListCellRenderer());
 
         return projectPanel;
     }
@@ -154,6 +168,10 @@ public class WelcomeView extends JFrame {
         File chosenFile = fileSelector.getSelectedFile();
         boolean success = appState.tryOpenProject(chosenFile.getPath());
         if(success){
+            // Add to history if successful
+            if(!appState.getWelcomeMenuData().projectHistory.contains(chosenFile.getPath())){
+                appState.getWelcomeMenuData().projectHistory.add(chosenFile.getPath());
+            }
             uiManager.openEditor();
             dispose();
         }

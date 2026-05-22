@@ -12,9 +12,14 @@ public class WelcomeProjectListCellRenderer extends DefaultListCellRenderer {
             boolean isSelected,
             boolean cellHasFocus)
     {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         label.setPreferredSize(new Dimension(600, 60));
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20)); // Set font size to 20
-        return label;
+        panel.add(label, BorderLayout.CENTER);
+        JButton removeButton = new JButton("X");
+        panel.add(removeButton, BorderLayout.EAST);
+        return panel;
     }
 }
