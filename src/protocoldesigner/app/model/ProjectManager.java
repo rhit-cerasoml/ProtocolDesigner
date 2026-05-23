@@ -30,12 +30,8 @@ public class ProjectManager {
 
     private boolean canRevertCache = false; // Not saved - must be on an operation during this session
 
-    public ProjectManager(String projectFilePath) {
-        try {
-            load(projectFilePath);
-        }catch (Exception e){
-            initDefault();
-        }
+    public ProjectManager(String projectFilePath) throws IOException, SerializingInputStream.InvalidStreamLengthException {
+        load(projectFilePath);
         libraries.add(LibraryModule.UTIL);
         libraries.add(LibraryModule.NET);
         libraries.add(LibraryModule.POOL);

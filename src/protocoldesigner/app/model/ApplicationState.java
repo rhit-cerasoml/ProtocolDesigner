@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class ApplicationState implements Serializable {
@@ -78,12 +79,18 @@ public class ApplicationState implements Serializable {
         }
 
         if(projectFilePath.valid){
-            projectManager = new ProjectManager(projectFilePath.s);
+            try {
+                projectManager = new ProjectManager(projectFilePath.s);
+            } catch (Exception e) {
+                projectManager = null;
+                JOptionPane.showMessageDialog(new JFrame(), "Unable to open project: " + projectFilePath.s, "Project Load Error!", JOptionPane.ERROR_MESSAGE);
+                projectFilePath.invalidate();
+            }
         }
     }
 
     public boolean isProjectOpen(){
-        return projectFilePath.valid;
+        return projectManager != null && projectManager.isValid();
     }
     public WelcomeMenuData getWelcomeMenuData(){
         return welcomeMenuData;
@@ -111,11 +118,11 @@ public class ApplicationState implements Serializable {
         projectFilePath.invalidate();
     }
     public boolean tryOpenProject(String path) {
-        projectManager = new ProjectManager(path);
-        if(projectManager.isValid()){
+        try {
+            projectManager = new ProjectManager(path);
             this.projectFilePath.set(path);
             return true;
-        }else{
+        } catch (Exception e) {
             projectManager = null;
             return false;
         }

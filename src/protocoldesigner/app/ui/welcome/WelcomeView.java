@@ -2,12 +2,16 @@ package protocoldesigner.app.ui.welcome;
 
 import protocoldesigner.app.model.ApplicationState;
 import protocoldesigner.app.ui.UIManager;
+import protocoldesigner.app.util.ClickableLabel;
+import protocoldesigner.app.util.NullMouseListener;
 import protocoldesigner.app.util.PanelList;
 import protocoldesigner.app.util.RecursiveFileFilter;
 
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -96,6 +100,8 @@ public class WelcomeView extends JFrame {
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.LINE_AXIS));
 
         JTextField searchBar = new JTextField(10);
+        searchBar.setText("Not yet implemented...");
+        searchBar.setEnabled(false);
         searchBar.setMinimumSize(new Dimension(100, 30));
         topPanel.add(searchBar);
 
@@ -108,24 +114,51 @@ public class WelcomeView extends JFrame {
         topPanel.setPreferredSize(new Dimension(200, searchBar.getPreferredSize().height));
         projectPanel.add(topPanel, BorderLayout.NORTH);
 
-        //JList<String> list = new JList<String>(appState.getWelcomeMenuData().projectHistory.toArray(new String[0]));
-        //JList<String> list = new JList<String>(new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"});
-
         PanelList list = new PanelList();
+        list.setScrollSensitivity(16);
         for(String s : appState.getWelcomeMenuData().projectHistory) {
             JPanel panel = new JPanel(new BorderLayout());
-            JLabel label = new JLabel(s);
-            label.setPreferredSize(new Dimension(600, 60));
-            label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+            ClickableLabel label = new ClickableLabel(s) {
+                @Override
+                protected void onClick() {
+                    if(appState.tryOpenProject(s)){
+                        uiManager.openEditor();
+                        dispose();
+                    } else {
+                        PromptRemoval(s, list);
+                    }
+                }
+            };
             panel.add(label, BorderLayout.CENTER);
-            panel.add(new JButton("X"), BorderLayout.EAST);
+            JButton XButton = new JButton("X");
+            XButton.addActionListener(e -> {
+                int index = appState.getWelcomeMenuData().projectHistory.indexOf(s);
+                appState.getWelcomeMenuData().projectHistory.remove(index);
+                list.removeElement(index);
+            });
+            panel.add(XButton, BorderLayout.EAST);
+
+            panel.setPreferredSize(new Dimension(0, 60));
+            panel.setMaximumSize(new Dimension(6000, 60));
             list.addElement(panel);
         }
         projectPanel.add(list);
         list.setPreferredSize(new Dimension(800, 800));
-        //list.setCellRenderer(new WelcomeProjectListCellRenderer());
 
         return projectPanel;
+    }
+
+    private void PromptRemoval(String s, PanelList list) {
+        int result = JOptionPane.showConfirmDialog(this,
+                "Could not find project at: " + s + "\nWould you like to remove this from the list?",
+                "Unable to locate project",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if(result == JOptionPane.YES_OPTION){
+            int index = appState.getWelcomeMenuData().projectHistory.indexOf(s);
+            appState.getWelcomeMenuData().projectHistory.remove(index);
+            list.removeElement(index);
+        }
     }
 
     private JPanel buildAboutPanel() {

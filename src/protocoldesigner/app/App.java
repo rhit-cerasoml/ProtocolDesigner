@@ -6,6 +6,7 @@ import protocoldesigner.app.util.PanelList;
 import protocoldesigner.library.util.appcache.ApplicationCache;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 public class App {
@@ -26,14 +27,6 @@ public class App {
         applicationState = new ApplicationState();
         uiManager = new UIManager(applicationState);
 
-        JFrame testFrame = new JFrame();
-
-        PanelList panelList = new PanelList();
-        panelList.addElement(new JButton("HI"));
-        testFrame.add(panelList);
-        testFrame.setVisible(true);
-        testFrame.setSize(900, 600);
-        panelList.addElement(new JButton("HI again"));
 
 
 
